@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import pkg from 'body-parser';
 
-import { get, save } from './services/history.js';
+import { get, getBy, save } from './services/history.js';
 
 const app = express();
 const { json } = pkg;
@@ -34,6 +34,11 @@ app.post('/invoke', async (req, res) => {
 
 app.get('/history', async (_, res) => {
     const history = await get()
+    res.json(history)
+});
+
+app.get('/invocations/:id', async (req, res) => {
+    const history = await getBy(req.params.id)
     res.json(history)
 });
 

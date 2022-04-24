@@ -25,6 +25,11 @@ export async function get() {
     return await db.get('history')
 }
 
+export async function getBy(id) {
+    const history = await db.get('history')
+    return history[id-1]
+}
+
 function getId(history) {
     if (history.length == 0) {
         return 1;

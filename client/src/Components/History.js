@@ -1,16 +1,13 @@
-
 import React, { useEffect, useState } from "react";
-
+import HourglassBottomRoundedIcon from '@mui/icons-material/HourglassBottomRounded';
 import { Button } from '@mui/material';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import TreeView from '@mui/lab/TreeView';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import TreeItem from '@mui/lab/TreeItem';
 import { getHistory } from "../services/ProxyService";
 
-export default function History() {
+export default function History(props) {
 
     const [state, setState] = useState({
         left: false,
@@ -24,33 +21,31 @@ export default function History() {
             setHistory(response);
         }
         fetchData().catch(console.error);
-    }, [state])
+    }, [])
+
+    function handleSelect(id) {
+        toggleDrawer('left', false)();
+        props.onSelect(id);
+    }
 
     const toggleDrawer =
-        (anchor, open) =>
-            (event) => {
-                if (
-                    event.type === 'keydown' &&
-                    (event.key === 'Tab' || event.key === 'Shift')) {
-                    return;
-                }
-
-                setState({ ...state, [anchor]: open });
+        (anchor, open) => (event) => {
+                setState({ [anchor]: open });
             };
 
-    const list = () => (
+    const invocations = () => (
         <Box
             sx={{ width: 400 }}
-            role="presentation"
-        >
+            role="presentation">
             <TreeView
-                aria-label="file system navigator"
-                defaultCollapseIcon={<ExpandMoreIcon />}
-                defaultExpandIcon={<ChevronRightIcon />}
-                sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
-            >
+                aria-label="History"
+                sx={{ flexGrow: 1, overflowY: 'auto', overflowX: 'auto' }}>
                 {history.map(h =>
-                    <TreeItem key={h.id} nodeId={String(h.id)} label={h.label} onClick={() => console.log(h.id)}>
+                    <TreeItem
+                        icon={<HourglassBottomRoundedIcon style={{ color: "#1976d2" }} />}
+                        key={h.id} nodeId={String(h.id)}
+                        label={h.label}
+                        onClick={() => handleSelect(h.id)}>
                     </TreeItem>
                 )}
             </TreeView>
@@ -63,9 +58,8 @@ export default function History() {
             <Drawer
                 anchor='left'
                 open={state['left']}
-                onClose={toggleDrawer('left', false)}
-            >
-                {list()}
+                onClose={toggleDrawer('left', false)}>
+                {invocations()}
             </Drawer>
         </>);
 }

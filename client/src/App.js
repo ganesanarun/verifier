@@ -1,13 +1,15 @@
 import './App.css';
 import RequestForm from './Components/RequestForm'
 import History from './Components/History'
-import { invoke } from './services/ProxyService';
+import { invoke, getInvocationBy } from './services/ProxyService';
 
 import React, { useState } from "react";
 import ReactJsonViewCompare from "react-json-view-compare";
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { Button, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import SendIcon from '@mui/icons-material/Send';
 
 export default function App() {
   const [legacyMethod, setLegacyMethod] = useState("GET");
@@ -19,9 +21,22 @@ export default function App() {
 
   const [oldData, setOldData] = useState(null);
   const [newData, setNewData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const populate = async (id) => {
+    const invocation = await getInvocationBy(id);
+    const { left, right } = invocation;
+    setLegacyBody(JSON.stringify(left.body));
+    setLegacyURL(left.url);
+    setLegacyMethod(left.method);
+    setNewBody(JSON.stringify(right.body));
+    setNewURL(right.url);
+    setNewMethod(right.method);
+  };
 
   const call = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const requestDraft = {
       left: {
         url: legacyURL,
@@ -37,11 +52,12 @@ export default function App() {
     const { left, right } = await invoke(requestDraft);
     setNewData(right);
     setOldData(left);
+    setLoading(false);
   }
 
   return (
     <Container maxWidth={false}>
-      <History />
+      <History onSelect={populate} />
       <Grid container justifyContent="center">
         <Typography variant="h4" component="h1" color="primary" gutterBottom={true}>
           Verifier
@@ -70,9 +86,14 @@ export default function App() {
           </Grid>
         </Grid>
         <Grid container justifyContent="center" sx={{ m: 2 }}>
-          <Button color="primary" size="large" type="submit" onClick={call} variant="contained">
-            Compare
-          </Button>
+          <LoadingButton
+        onClick={call}
+        endIcon={<SendIcon />}
+        loading={loading}
+        loadingPosition="end"
+        size="large"
+        variant="contained"
+      >Compare</LoadingButton>
         </Grid>
 
       </form>

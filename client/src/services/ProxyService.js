@@ -9,3 +9,8 @@ export async function getHistory() {
     const response = await axios.get("http://localhost:5001/history");
     return response.data;
 }
+
+export async function getInvocationBy(id) {
+    const response = await axios.get(`http://localhost:5001/invocations/${id}`);
+    return response.data;
+}
