@@ -4,6 +4,9 @@ import { invoke } from './services/ProxyService';
 
 import React, { useState } from "react";
 import ReactJsonViewCompare from "react-json-view-compare";
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import { Button, Grid } from '@mui/material';
 
 
 export default function App() {
@@ -38,33 +41,49 @@ export default function App() {
   }
 
   return (
-    <div className='main'>
+    <Container maxWidth={false}>
+      <Grid container justifyContent="center">
+        <Typography variant="h4" component="h1" color="primary" gutterBottom={true}>
+          Verifier
+        </Typography>
+      </Grid>
+      
       <form onSubmit={call}>
-        <RequestForm title="Legacy"
-          onMethodChange={setLegacyMethod}
-          method={legacyMethod}
-          url={legacyURL}
-          onUrlChange={setLegacyURL}
-          body={legacyBody}
-          onBodyChange={setLegacyBody} />
-        <RequestForm title="New"
-          method={newMethod}
-          onMethodChange={setNewMethod}
-          url={newURL}
-          onUrlChange={setNewURL}
-          body={newBody}
-          onBodyChange={setNewBody} />
+        <Grid container spacing={2}>
+          <Grid item md={6}>
+            <RequestForm title="Legacy"
+            onMethodChange={setLegacyMethod}
+            method={legacyMethod}
+            url={legacyURL}
+            onUrlChange={setLegacyURL}
+            body={legacyBody}
+            onBodyChange={setLegacyBody} />
+          </Grid>
+          <Grid item md={6}>
+            <RequestForm title="New"
+            method={newMethod}
+            onMethodChange={setNewMethod}
+            url={newURL}
+            onUrlChange={setNewURL}
+            body={newBody}
+            onBodyChange={setNewBody} />
+        </Grid>
+      </Grid>
 
-      <div className="btns">
-          <input className="btn btn-confirm" type="submit" value="compare" />
-      </div>
-        
+
+
+      <Grid container justifyContent="center" sx={{ m: 2 }}>
+        <Button color="primary" size="large" type="submit" onClick={call}  variant="contained">
+          Compare
+        </Button>
+      </Grid>
+
       </form>
 
       {oldData && newData
         ? <ReactJsonViewCompare oldData={oldData} newData={newData} />
         : <></>
       }
-    </div>
+    </Container>
   );
 }
