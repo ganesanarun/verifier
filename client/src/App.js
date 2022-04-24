@@ -37,6 +37,8 @@ export default function App() {
   const call = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setOldData(null);
+    setNewData(null);
     const requestDraft = {
       left: {
         url: legacyURL,
@@ -50,8 +52,6 @@ export default function App() {
       }
     }
     try {
-
-
       const { left, right } = await invoke(requestDraft);
       setNewData(right);
       setOldData(left);
