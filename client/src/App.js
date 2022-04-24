@@ -1,7 +1,9 @@
 import './App.css';
 import RequestForm from './Components/RequestForm'
 import History from './Components/History'
+import Headers from './Components/Headers'
 import { invoke, getInvocationBy } from './services/ProxyService';
+import * as constants from './services/constants';
 
 import React, { useState } from "react";
 import ReactJsonViewCompare from "react-json-view-compare";
@@ -23,15 +25,29 @@ export default function App() {
   const [newData, setNewData] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const [apiKey, setApiKey] = useState('');
+
   const populate = async (id) => {
     const invocation = await getInvocationBy(id);
     const { left, right } = invocation;
+    console.log(invocation);
     setLegacyBody(JSON.stringify(left.body));
     setLegacyURL(left.url);
     setLegacyMethod(left.method);
     setNewBody(JSON.stringify(right.body));
     setNewURL(right.url);
     setNewMethod(right.method);
+    setApiKey(left.headers[constants.API_HEADER])
+  };
+
+  const headers = {
+    [constants.API_HEADER]: apiKey
+  }
+
+
+
+  const onRowEdit = (e) => {
+    setApiKey(e.row.value);
   };
 
   const call = async (e) => {
@@ -39,16 +55,19 @@ export default function App() {
     setLoading(true);
     setOldData(null);
     setNewData(null);
+
     const requestDraft = {
       left: {
         url: legacyURL,
         method: legacyMethod,
-        body: JSON.parse(legacyBody)
+        body: JSON.parse(legacyBody),
+        headers
       },
       right: {
         url: newURL,
         method: newMethod,
-        body: JSON.parse(newBody)
+        body: JSON.parse(newBody),
+        headers
       }
     }
     try {
@@ -65,12 +84,17 @@ export default function App() {
 
   return (
     <Container maxWidth={false}>
+      
+      
+
       <History onSelect={populate} />
       <Grid container justifyContent="center">
         <Typography variant="h4" component="h1" color="primary" gutterBottom={true}>
           Verifier
         </Typography>
       </Grid>
+
+      
 
       <form onSubmit={call}>
         <Grid container spacing={2}>
@@ -93,6 +117,9 @@ export default function App() {
               onBodyChange={setNewBody} />
           </Grid>
         </Grid>
+
+        <Headers onRowEdit={onRowEdit} apiKey={apiKey}/>
+        
         <Grid container justifyContent="center" sx={{ m: 2 }}>
           <LoadingButton
             onClick={call}
