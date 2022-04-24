@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, TextField, Grid } from "@mui/material";
+import { Card, CardContent, CardHeader, TextField, Stack, Divider } from "@mui/material";
 import React from "react";
 
 
@@ -20,27 +20,26 @@ export default function RequestForm({ title, body, method, url, onBodyChange, on
 
     return (
         <Card variant="outlined">
-            <CardHeader title={title} sx={{ color: 'white', bgcolor: 'primary.main'}}/>
+            <CardHeader title={title} sx={{ color: 'white', bgcolor: 'primary.main' }} />
             <CardContent>
-                <Grid container spacing={1}>
-                    <Grid item md={2}>
-                        <TextField
-                            id="outlined-basic"
-                            margin="normal"
-                            required
-                            label="Method"
-                            value={method} onChange={e => onMethodChange(e.target.value)} />
-                    </Grid>
-                    <Grid item md={10}>
-                        <TextField
-                            label="URL"
-                            type="text"
-                            margin="normal"
-                            value={url}
-                            onChange={e => onUrlChange(e.target.value)}
-                            required fullWidth={true} />
-                    </Grid>
-                </Grid>
+                <Stack direction="row"
+                    alignItems="center"
+                    spacing={{ sm: 2 }}
+                    divider={<Divider orientation="vertical" flexItem />}>
+                    <TextField
+                        id="outlined-basic"
+                        margin="normal"
+                        required
+                        label="Method"
+                        value={method} onChange={e => onMethodChange(e.target.value)} />
+                    <TextField
+                        label="URL"
+                        type="text"
+                        margin="normal"
+                        value={url}
+                        onChange={e => onUrlChange(e.target.value)}
+                        required fullWidth={true} />
+                </Stack>
                 <TextField
                     label="Body"
                     type="textarea"
