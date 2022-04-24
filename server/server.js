@@ -2,8 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import axios from 'axios';
 
-const app = express();
 import pkg from 'body-parser';
+
+import { get, save } from './services/history.js';
+
+const app = express();
 const { json } = pkg;
 
 const port = process.env.PORT || 5001;
@@ -11,8 +14,10 @@ const port = process.env.PORT || 5001;
 app.use(json());
 app.use(cors());
 
-app.post('/invoke', (req, res) => {
+app.post('/invoke', async (req, res) => {
     const { left, right } = req.body;
+
+    await save(req.body)
 
     const leftAwaiter = invoke(left);
     const rightAwaiter = invoke(right);
@@ -25,6 +30,11 @@ app.post('/invoke', (req, res) => {
                 right: rightResponse
             });
         });
+});
+
+app.get('/history', async (_, res) => {
+    const history = await get()
+    res.json(history)
 });
 
 async function invoke(requestDraft) {
