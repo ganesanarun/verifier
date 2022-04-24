@@ -21,7 +21,7 @@ export default function History(props) {
             setHistory(response);
         }
         fetchData().catch(console.error);
-    }, [])
+    }, [state])
 
     function handleSelect(id) {
         toggleDrawer('left', false)();

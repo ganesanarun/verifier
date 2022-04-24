@@ -49,10 +49,18 @@ export default function App() {
         body: JSON.parse(newBody)
       }
     }
-    const { left, right } = await invoke(requestDraft);
-    setNewData(right);
-    setOldData(left);
-    setLoading(false);
+    try {
+
+
+      const { left, right } = await invoke(requestDraft);
+      setNewData(right);
+      setOldData(left);
+      setLoading(false);
+    }
+    catch (e) {
+      console.log(e);
+      setLoading(false);
+    }
   }
 
   return (
@@ -87,13 +95,13 @@ export default function App() {
         </Grid>
         <Grid container justifyContent="center" sx={{ m: 2 }}>
           <LoadingButton
-        onClick={call}
-        endIcon={<SendIcon />}
-        loading={loading}
-        loadingPosition="end"
-        size="large"
-        variant="contained"
-      >Compare</LoadingButton>
+            onClick={call}
+            endIcon={<SendIcon />}
+            loading={loading}
+            loadingPosition="end"
+            size="large"
+            variant="contained"
+          >Compare</LoadingButton>
         </Grid>
 
       </form>
