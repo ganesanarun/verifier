@@ -1,15 +1,27 @@
-import { Level } from 'level'
+import storage from 'node-persist'
 
-const db = new Level('./data', { valueEncoding: 'json', createIfMissing: true })
+//you must first call storage.init
+await storage.init({
+    stringify: JSON.stringify,
 
-await db.put('history', [])
+    parse: JSON.parse,
+
+    encoding: 'utf8',
+
+    logging: false,
+
+    ttl: false,
+
+    dir: 'data',
+});
+
 
 const reg = /.+?:\/\/.+?(\/.+?)(?:#|\?|$)/;
 
 export async function save(req) {
-    let history = await db.get('history')
-    const id = getId(history);
-    const path = reg.exec(req.left.url)[1]
+    let history = await get()
+    const id = getLastId(history);
+    const path = reg.exec(req.left.url) && reg.exec(req.left.url).length > 1 ? reg.exec(req.left.url)[1] : req.left.url
 
     const newRequest = {
         ...req,
@@ -18,19 +30,19 @@ export async function save(req) {
     }
 
     history.push(newRequest)
-    await db.put('history', history)
+    await storage.updateItem('history', history)
 }
 
 export async function get() {
-    return await db.get('history')
+    return await storage.getItem('history') ?? []
 }
 
 export async function getBy(id) {
-    const history = await db.get('history')
-    return history[id-1]
+    const history = await storage.getItem('history')
+    return history[id - 1]
 }
 
-function getId(history) {
+function getLastId(history) {
     if (history.length == 0) {
         return 1;
     }
