@@ -34,7 +34,7 @@ app.post('/invoke', async (req, res) => {
 
 app.get('/history', async (_, res) => {
     const history = await get()
-    res.json(history)
+    res.json(history.reverse())
 });
 
 app.get('/invocations/:id', async (req, res) => {
