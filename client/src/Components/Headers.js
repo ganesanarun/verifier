@@ -25,7 +25,8 @@ export default function Headers({ onRowEdit, apiKey }) {
                     rows={rows}
                     editMode="row"
                     columns={columns}
-                    onRowEditStop={onRowEdit} />
+                    onRowEditStop={onRowEdit} 
+                    rowCount={1}/>
             </div>
         </>)
 }

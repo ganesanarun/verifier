@@ -1,1 +1,1 @@
-export const API_HEADER = 'API-KEY';
+export const API_HEADER = 'ApiKey';

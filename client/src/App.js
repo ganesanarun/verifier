@@ -13,13 +13,14 @@ import { Grid } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 
+
 export default function App() {
   const [legacyMethod, setLegacyMethod] = useState("GET");
   const [newMethod, setNewMethod] = useState("GET");
-  const [legacyURL, setLegacyURL] = useState("http://localhost:8080/api/users");
-  const [newURL, setNewURL] = useState("http://localhost:8080/api/users2");
-  const [legacyBody, setLegacyBody] = useState(`{"a": "whatever"}`)
-  const [newBody, setNewBody] = useState(`{"b": "whatever"}`)
+  const [legacyURL, setLegacyURL] = useState("https://test.api.azeus.gaptech.com");
+  const [newURL, setNewURL] = useState("https://test.api.azeus.gaptech.com");
+  const [legacyBody, setLegacyBody] = useState(`{}`)
+  const [newBody, setNewBody] = useState(`{}`)
 
   const [oldData, setOldData] = useState(null);
   const [newData, setNewData] = useState(null);
@@ -84,17 +85,12 @@ export default function App() {
 
   return (
     <Container maxWidth={false}>
-      
-      
-
       <History onSelect={populate} />
       <Grid container justifyContent="center">
         <Typography variant="h4" component="h1" color="primary" gutterBottom={true}>
-          Verifier
+          JUXTA
         </Typography>
       </Grid>
-
-      
 
       <form onSubmit={call}>
         <Grid container spacing={2}>
@@ -107,7 +103,7 @@ export default function App() {
               body={legacyBody}
               onBodyChange={setLegacyBody} />
           </Grid>
-          <Grid item md={6}>
+      <Grid item md={6}>
             <RequestForm title="New"
               method={newMethod}
               onMethodChange={setNewMethod}
