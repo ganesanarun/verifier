@@ -49,7 +49,7 @@ export default function History(props) {
                     </TreeItem>
                 )}
             </TreeView>
-        </Box>
+        </Box>       
     );
 
     return (

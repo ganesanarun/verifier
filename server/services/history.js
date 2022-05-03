@@ -34,12 +34,26 @@ export async function save(req) {
 }
 
 export async function get() {
-    return await storage.getItem('history') ?? []
+    return await storage.getItem('history') || []
 }
 
 export async function getBy(id) {
-    const history = await storage.getItem('history')
-    return history[id - 1]
+    const history = await get()
+    return history.length >= id - 1 ? history[id - 1] : []
+}
+
+export async function getLastInvocation() {
+    let history = await get()
+    history = history.length > 0 ? history : [{
+        left: {
+
+        },
+        right: {
+
+        }
+    }]
+    const last = history.reverse()[0]
+    return last
 }
 
 function getLastId(history) {

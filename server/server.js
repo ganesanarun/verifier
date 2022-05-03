@@ -1,15 +1,26 @@
 import express from 'express';
 import cors from 'cors';
 import axios from 'axios';
+import { join, dirname } from 'path';
+import {  writeFileSync, existsSync, mkdirSync, unlinkSync } from 'fs';
+import { dump } from 'js-yaml'
+import { fileURLToPath } from 'url';
 
 import pkg from 'body-parser';
 
-import { get, getBy, save } from './services/history.js';
+import { get, getBy, save, getLastInvocation } from './services/history.js';
 
 const app = express();
 const { json } = pkg;
 
 const port = process.env.PORT || 5001;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const dir = join(__dirname, 'temp')
+
+if (!existsSync(dir)) {
+    mkdirSync(dir);
+}
 
 app.use(json());
 app.use(cors());
@@ -42,6 +53,29 @@ app.get('/invocations/:id', async (req, res) => {
     res.json(history)
 });
 
+app.get('/export/invocation', async (_, res) => {
+    const last = await getLastInvocation()
+    const legacy = last.left
+    const latest = last.right
+    const a = {
+        "legacy": {
+            "url": new String(legacy.url),
+            "method": legacy.method,
+            "body": JSON.stringify(legacy.body)
+        }, "latest": {
+            "url": new String(latest.url),
+            "method": latest.method,
+            "body": JSON.stringify(latest.body)
+        }
+    }
+    const data = dump(a)
+    const filename = `${getRandomFileName()}.yaml`
+    storeData(data, join(dir, filename))
+    res.download(join(dir, filename), filename, (err) => {
+        unlinkSync(join(dir, filename));
+    });
+});
+
 async function invoke(requestDraft) {
     const { method, url, headers, body } = requestDraft;
     const config = {
@@ -71,6 +105,18 @@ function extract(response) {
     return {
         status, data, headers
     };
+}
+
+const storeData = (data, path) => {
+    writeFileSync(path, data)
+    console.log("Successfully written to file.")
+}
+
+function getRandomFileName() {
+    var timestamp = new Date().toISOString().replace(/[-:.]/g, "");
+    var random = ("" + Math.random()).substring(2, 8);
+    var random_number = timestamp + random;
+    return random_number;
 }
 
 app.listen(port, () => {

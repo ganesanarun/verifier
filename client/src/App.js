@@ -9,7 +9,8 @@ import React, { useState } from "react";
 import ReactJsonViewCompare from "react-json-view-compare";
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
+import GetAppIcon from '@mui/icons-material/GetApp';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 
@@ -44,8 +45,6 @@ export default function App() {
   const headers = {
     [constants.API_HEADER]: apiKey
   }
-
-
 
   const onRowEdit = (e) => {
     setApiKey(e.row.value);
@@ -86,6 +85,7 @@ export default function App() {
   return (
     <Container maxWidth={false}>
       <History onSelect={populate} />
+      <Button endIcon={<GetAppIcon />} href="http://localhost:5001/export/invocation">Export</Button>
       <Grid container justifyContent="center">
         <Typography variant="h4" component="h1" color="primary" gutterBottom={true}>
           JUXTA
@@ -103,7 +103,7 @@ export default function App() {
               body={legacyBody}
               onBodyChange={setLegacyBody} />
           </Grid>
-      <Grid item md={6}>
+          <Grid item md={6}>
             <RequestForm title="New"
               method={newMethod}
               onMethodChange={setNewMethod}
@@ -114,8 +114,8 @@ export default function App() {
           </Grid>
         </Grid>
 
-        <Headers onRowEdit={onRowEdit} apiKey={apiKey}/>
-        
+        <Headers onRowEdit={onRowEdit} apiKey={apiKey} />
+
         <Grid container justifyContent="center" sx={{ m: 2 }}>
           <LoadingButton
             onClick={call}
@@ -126,6 +126,7 @@ export default function App() {
             variant="contained"
           >Compare</LoadingButton>
         </Grid>
+
 
       </form>
 
