@@ -3,10 +3,11 @@ import * as constants from '../services/constants';
 import { DataGrid } from '@mui/x-data-grid';
 import Typography from '@mui/material/Typography';
 
-export default function Headers({ onRowEdit, apiKey }) {
+export default function Headers({ onRowEdit, apiKey, gatewayKey }) {
 
     const rows = [
-        { id: 1, key: constants.API_HEADER, value: apiKey }
+        { id: 1, key: constants.API_HEADER, value: apiKey },
+        { id: 2, key: constants.API_GATEWAY_HEADER, value: gatewayKey }
     ];
 
     const columns = [
@@ -26,7 +27,7 @@ export default function Headers({ onRowEdit, apiKey }) {
                     editMode="row"
                     columns={columns}
                     onRowEditStop={onRowEdit} 
-                    rowCount={1}/>
+                    rowCount={2}/>
             </div>
         </>)
 }

@@ -28,6 +28,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
 
   const [apiKey, setApiKey] = useState('');
+  const [gatewayKey, setGatewayKey] = useState('');
 
   const populate = async (id) => {
     const invocation = await getInvocationBy(id);
@@ -40,14 +41,19 @@ export default function App() {
     setNewURL(right.url);
     setNewMethod(right.method);
     setApiKey(left.headers[constants.API_HEADER])
+    setGatewayKey(left.headers[constants.API_GATEWAY_HEADER])
   };
 
   const headers = {
-    [constants.API_HEADER]: apiKey
+    [constants.API_HEADER]: apiKey,
+    [constants.API_GATEWAY_HEADER]: gatewayKey
   }
 
   const onRowEdit = (e) => {
-    setApiKey(e.row.value);
+    if(e.id === 1) {
+      return setApiKey(e.row.value);
+    }
+    setGatewayKey(e.row.value);
   };
 
   const call = async (e) => {
@@ -114,7 +120,7 @@ export default function App() {
           </Grid>
         </Grid>
 
-        <Headers onRowEdit={onRowEdit} apiKey={apiKey} />
+        <Headers onRowEdit={onRowEdit} apiKey={apiKey} gatewayKey={gatewayKey} />
 
         <Grid container justifyContent="center" sx={{ m: 2 }}>
           <LoadingButton
